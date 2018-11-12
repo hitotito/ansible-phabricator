@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  role_name: phabricator
+  author: Hitoshi Okonogi
+  description: role to install & manage phabricator
+  license: MIT
+  min_ansible_version: 2.2
+  platforms:
+    - name: Debian
+      versions:
+        - stretch
+  galaxy_tags:
+    - phabricator

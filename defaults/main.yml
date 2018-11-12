@@ -1,0 +1,13 @@
+---
+phabricator_folder_home: /srv/phabricator
+phabricator_folder_nginx_conf: /etc/nginx
+
+phabricator_group: phabricator
+phabricator_user: phabricator
+
+phabricator_url: phabricator.local
+
+phabricator_consul_service_enable: false
+phabricator_consul_service_name: phabricator
+phabricator_port: 80
+phabricator_mysql_user: phabricator

@@ -1,0 +1,94 @@
+---
+- name: INSTALL | Ensure phabricator group exists
+  group:
+    name: "{{ phabricator_group }}"
+    state: present
+
+- name: INSTALL | Ensure phabricator user exists
+  user:
+    name: "{{ phabricator_user }}"
+    group: "{{ phabricator_group }}"
+    state: present
+
+- name: INSTALL | Create phabricator directory structure
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: "{{ phabricator_user }}"
+    group: "{{ phabricator_group }}"
+  with_items:
+    - "{{ phabricator_folder_home }}"
+
+- name: INSTALL | Install pre-dependecy
+  apt:
+    name: apt-transport-https
+    state: present
+
+- name: INSTALL | Add sury gpg key
+  apt_key:
+    url: https://packages.sury.org/php/apt.gpg
+    state: present
+
+- name: INSTALL | Include sury repository
+  apt_repository:
+    repo: deb https://packages.sury.org/php/ stretch main
+    filename: php.list
+    state: present
+
+- name: INSTALL | Install dependency packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - git
+    - nginx
+    - php7.2-fpm
+    - php-apcu
+    - php-mbstring
+    - php-curl
+    - php-mysql
+
+- name: INSTALL | Fetch git repositories
+  become_user: "{{ phabricator_user }}"
+  git:
+    repo: "{{ item.src }}"
+    dest: "{{ phabricator_folder_home }}/{{item.dest}}"
+  with_items:
+    - src: https://github.com/phacility/libphutil.git
+      dest: libphutil
+    - src: https://github.com/phacility/arcanist.git
+      dest: arcanist
+    - src: https://github.com/phacility/phabricator.git
+      dest: phabricator
+
+- name: INSTALL | Copy nginx configuration
+  template:
+    src: phabricator.conf.nginx.j2
+    dest: "{{ phabricator_folder_nginx_conf }}/sites-available/phabricator.conf"
+    mode: 0664
+  notify:
+    - Reload nginx
+
+- name: INSTALL | Delete nginx default site config
+  file:
+    path: "{{ phabricator_folder_nginx_conf }}/sites-enabled/default"
+    state: absent
+
+- name: INSTALL | Create nginx enable symlink
+  file:
+    src: "{{ phabricator_folder_nginx_conf }}/sites-available/phabricator.conf"
+    dest: "{{ phabricator_folder_nginx_conf }}/sites-enabled/phabricator.conf"
+    state: link
+  notify:
+    - Reload nginx
+
+# TODO - get current user in facts, then compare here with when
+- name: INSTALL | Set phabricator mysql user
+  shell: |
+    {{ phabricator_folder_bin }}/config set mysql.user {{ phabricator_mysql_user }}
+
+# need to make sure how to make this idempotent
+- name: INSTALL | Upgrade database schema
+  shell: |
+    {{ phabricator_folder_bin }}/storage upgrade --force

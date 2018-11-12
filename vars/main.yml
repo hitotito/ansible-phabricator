@@ -1,0 +1,2 @@
+---
+phabricator_folder_bin: "{{ phabricator_folder_home }}/phabricator/bin"

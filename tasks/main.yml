@@ -1,0 +1,11 @@
+---
+- name: install phabricator
+  import_tasks: install.yml
+  tags:
+    - install
+
+- name: install consul service definition
+  import_tasks: consul.yml
+  when: phabricator_consul_service_enable
+  tags:
+    - consul_definition
