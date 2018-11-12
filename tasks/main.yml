@@ -6,6 +6,6 @@
 
 - name: install consul service definition
   import_tasks: consul.yml
-  when: phabricator_consul_service_enable
+  when: phabricator_consul_service_enabled
   tags:
     - consul_definition

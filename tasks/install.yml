@@ -81,12 +81,16 @@
     dest: "{{ phabricator_folder_nginx_conf }}/sites-enabled/phabricator.conf"
     state: link
   notify:
-    - Reload nginx
+    - Restart nginx
 
 # TODO - get current user in facts, then compare here with when
 - name: INSTALL | Set phabricator mysql user
   shell: |
     {{ phabricator_folder_bin }}/config set mysql.user {{ phabricator_mysql_user }}
+
+- name: INSTALL | Set phabrcator mysql password
+  shell: |
+    {{ phabricator_folder_bin }}/config set mysql.pass {{ phabricator_mysql_pass }}
 
 # need to make sure how to make this idempotent
 - name: INSTALL | Upgrade database schema
