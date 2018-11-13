@@ -54,6 +54,7 @@
   become_user: "{{ phabricator_user }}"
   git:
     repo: "{{ item.src }}"
+    update: "{{ phabricator_repo_update }}"
     dest: "{{ phabricator_folder_home }}/{{item.dest}}"
   with_items:
     - src: https://github.com/phacility/libphutil.git
@@ -91,8 +92,3 @@
     owner: "{{ phabricator_user }}"
     group: "{{ phabricator_group }}"
     mode: 0644
-
-# TODO - create flag, so that it will not upgrade, unless it's specified
-- name: INSTALL | Upgrade database schema
-  shell: |
-    {{ phabricator_folder_bin }}/storage upgrade --force

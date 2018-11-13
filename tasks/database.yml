@@ -1,0 +1,12 @@
+---
+- name: DATABASE | Check databases already exist
+  shell: |
+    mysql -e "SHOW DATABASES like 'phabricator_system'" -sN
+  register: _phabricator_db_schema_check
+  changed_when: false
+  failed_when: _phabricator_db_schema_check.rc == 2
+
+- name: DATABASE | Upgrade database schema
+  when: phabricator_db_force_upgrade or _phabricator_db_schema_check.stdout != 'phabricator_system'
+  shell: |
+    {{ phabricator_folder_bin }}/storage upgrade --force

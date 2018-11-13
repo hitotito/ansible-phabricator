@@ -4,6 +4,11 @@
   tags:
     - install
 
+- name: database operations
+  import_tasks: database.yml
+  tags:
+    - database
+
 - name: install consul service definition
   import_tasks: consul.yml
   when: phabricator_consul_service_enabled

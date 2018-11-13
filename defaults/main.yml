@@ -15,3 +15,6 @@ phabricator_port: 80
 phabricator_mysql_host: localhost
 phabricator_mysql_user: phabricator
 phabricator_mysql_pass: phabricator_test
+
+phabricator_repo_update: false
+phabricator_db_force_upgrade: false
