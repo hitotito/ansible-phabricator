@@ -50,6 +50,7 @@
     - php-mysql
 
 - name: INSTALL | Fetch git repositories
+  become: yes
   become_user: "{{ phabricator_user }}"
   git:
     repo: "{{ item.src }}"
@@ -83,16 +84,15 @@
   notify:
     - Restart nginx
 
-# TODO - get current user in facts, then compare here with when
-- name: INSTALL | Set phabricator mysql user
-  shell: |
-    {{ phabricator_folder_bin }}/config set mysql.user {{ phabricator_mysql_user }}
+- name: INSTALL | Create custom configuration file
+  template:
+    src: custom.conf.php.j2
+    dest: "{{ phabricator_folder_conf }}/{{ phabricator_env }}.conf.php"
+    owner: "{{ phabricator_user }}"
+    group: "{{ phabricator_group }}"
+    mode: 0644
 
-- name: INSTALL | Set phabrcator mysql password
-  shell: |
-    {{ phabricator_folder_bin }}/config set mysql.pass {{ phabricator_mysql_pass }}
-
-# need to make sure how to make this idempotent
+# TODO - create flag, so that it will not upgrade, unless it's specified
 - name: INSTALL | Upgrade database schema
   shell: |
     {{ phabricator_folder_bin }}/storage upgrade --force
