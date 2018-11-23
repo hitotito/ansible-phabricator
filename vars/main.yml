@@ -1,2 +1,3 @@
 ---
 phabricator_folder_bin: "{{ phabricator_folder_home }}/phabricator/bin"
+phabricator_folder_conf: "{{ phabricator_folder_home }}/phabricator/conf"

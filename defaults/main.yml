@@ -11,3 +11,4 @@ phabricator_consul_service_enable: false
 phabricator_consul_service_name: phabricator
 phabricator_port: 80
 phabricator_mysql_user: phabricator
+phabricator_mysql_pass: phabricator_pass
