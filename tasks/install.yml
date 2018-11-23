@@ -50,9 +50,11 @@
     - php-mysql
 
 - name: INSTALL | Fetch git repositories
+  become: yes
   become_user: "{{ phabricator_user }}"
   git:
     repo: "{{ item.src }}"
+    update: "{{ phabricator_repo_update }}"
     dest: "{{ phabricator_folder_home }}/{{item.dest}}"
   with_items:
     - src: https://github.com/phacility/libphutil.git
@@ -83,15 +85,10 @@
   notify:
     - Restart nginx
 
-- name: INSTALL | Set phabricator mysql user and password
+- name: INSTALL | Create custom configuration file
   template:
-    src: local.json.j2
-    dest: "{{ phabricator_folder_conf }}/local/local.json"
+    src: custom.conf.php.j2
+    dest: "{{ phabricator_folder_conf }}/{{ phabricator_env }}.conf.php"
     owner: "{{ phabricator_user }}"
     group: "{{ phabricator_group }}"
     mode: 0644
-
-# need to make sure how to make this idempotent
-- name: INSTALL | Upgrade database schema
-  shell: |
-    {{ phabricator_folder_bin }}/storage upgrade --force

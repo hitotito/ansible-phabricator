@@ -5,10 +5,16 @@ phabricator_folder_nginx_conf: /etc/nginx
 phabricator_group: phabricator
 phabricator_user: phabricator
 
-phabricator_url: phabricator.local
+phabricator_url: www.phabricator.local
+phabricator_env: production
 
-phabricator_consul_service_enable: false
+phabricator_consul_service_enabled: false
 phabricator_consul_service_name: phabricator
 phabricator_port: 80
+
+phabricator_mysql_host: localhost
 phabricator_mysql_user: phabricator
-phabricator_mysql_pass: phabricator_pass
+phabricator_mysql_pass: phabricator_test
+
+phabricator_repo_update: false
+phabricator_db_force_upgrade: false
