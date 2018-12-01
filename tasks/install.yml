@@ -50,6 +50,7 @@
     - php-mysql
 
 - name: INSTALL | Fetch git repositories
+  tags: skip_ansible_lint
   become: yes
   become_user: "{{ phabricator_user }}"
   git:
